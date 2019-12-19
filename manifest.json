@@ -1,0 +1,39 @@
+{
+    "name": "Dark Mode",
+    "author": "ilosey14",
+    "version": "0.1",
+    "description": "Very simple dark mode extension",
+    "permissions": [
+        "storage",
+        "tabs",
+        "activeTab"
+    ],
+    "browser_action": {
+        "default_icon": {
+            "20": "img/icon_20.png",
+            "40": "img/icon_40.png"
+        },
+        "default_title": "Dark Mode",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "js/content.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "options_ui": {
+        "page": "/options/options.html"
+    }
+}
