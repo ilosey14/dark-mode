@@ -6,14 +6,14 @@
     browser.storage.local.get('dark', function (r) {
         if (r.dark) {
             browser.storage.local.get('whitelist', function (r) {
-                if (!r.whiltelist || (r.whitelist && !r.whitelist.some(function (pattern) {
-                    return location.href.match(new RegExp(pattern));
-                }))) {
+                if (!r.whiltelist ||
+                    (r.whitelist && !r.whitelist.some(function (pattern) {
+                        return location.href.match(new RegExp(pattern));
+                    }))
+                )
                     setStyle();
-                }
-                else {
+                else
                     console.log('Site whitelisted')
-                }
             });
         }
     });
