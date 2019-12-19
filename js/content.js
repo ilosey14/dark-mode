@@ -7,9 +7,9 @@
         if (r.dark) {
             browser.storage.local.get('whitelist', function (r) {
                 if (!r.whiltelist ||
-                    (r.whitelist && !r.whitelist.some(function (pattern) {
-                        return location.href.match(new RegExp(pattern));
-                    }))
+                    (r.whitelist && !r.whitelist.some(pattern =>
+                        location.href.match(new RegExp(pattern))
+                    ))
                 )
                     setStyle();
                 else
