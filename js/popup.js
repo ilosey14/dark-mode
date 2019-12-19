@@ -1,0 +1,24 @@
+(function () {
+    // toggle button
+    var theme = document.getElementById('theme-toggle');
+    theme.onchange = function () {
+        browser.storage.local.set({dark: this.checked});
+    };
+    theme.checked = browser.storage.local.get('dark', function (response) {
+        theme.checked = response.dark;
+        delete theme;
+    });
+
+    // whitelist
+    document.getElementById('whitelist-page').onclick = function () {
+        browser.storage.local.get('whitelist', function (response) {
+            if (!(response.whitelist instanceof Array)) return;
+            response.whitelist.push(location.host);
+            browser.storage.local.set({whitelist: response.whitelist});
+        });
+    };
+    document.getElementById('whitelist-edit').onclick = function () {
+        // browser.runtime.openOptionsPage();
+        browser.tabs.create({ url: '/options/options.html'});
+    };
+})();
