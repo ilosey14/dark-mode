@@ -1,7 +1,7 @@
 (function () {
     var s = document.createElement('style');
     s.type = 'text/css';
-    s.innerHTML = 'body{filter:invert(95%);background-color:#eee}img,video,iframe,[style*=background-image]{filter:invert(95%)}';
+    s.innerHTML = 'html{filter:invert(95%);background-color:#eee}img,video,iframe,[style*=background-image]{filter:invert(95%)}';
 
     browser.storage.local.get('dark', function (r) {
         if (r.dark) {
