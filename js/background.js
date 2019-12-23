@@ -1,1 +1,1 @@
-browser.storage.local.set({'dark': true});
+browser.storage.local.set({ 'dark': true });
