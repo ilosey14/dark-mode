@@ -1,5 +1,7 @@
 // ./settings/options.js
-var list = document.getElementById('whitelist');
+var list = document.getElementById('whitelist'),
+    saved = false;
+
 list.nItems = 0;
 
 // get whitelist
@@ -30,6 +32,19 @@ document.getElementById('whitelist-form').onsubmit = function (e) {
     browser.storage.local.set({
         whitelist: whitelist
     });
+
+    // save
+    saved = true;
+};
+
+// unload
+window.onbeforeunload = function (e) {
+    if (saved) return;
+
+    e.preventDefault();
+    e.returnValue = '';
+
+    return 'Are you sure you want to leave?';
 };
 
 function addItem(value = '') {
@@ -53,4 +68,6 @@ function addItem(value = '') {
     list.appendChild(li);
 
     text.focus();
+
+    saved = false;
 }
