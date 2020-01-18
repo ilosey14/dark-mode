@@ -1,29 +1,42 @@
 (function () {
-    var s = document.createElement('style');
-    s.type = 'text/css';
-    s.innerHTML = 'html{filter:invert(95%);background-color:#111}img,video,iframe,[style*=background-image]{filter:invert(95%)}';
-    // `html{filter:url(${browser.extension.getURL('/css/dark-mode-filter.svg')}#filter)}`;
+    // basic styling
+    // 'html{filter:invert(95%);background-color:#111}img,video,iframe,[style*=background-image]{filter:invert(95%)}';
 
-    browser.storage.local.get('dark', function (response) {
-        if (response.dark) {
-            browser.storage.local.get('whitelist', function (response) {
-                if (!response.whiltelist || !response.whitelist.some(function (pattern) {
-                        return location.href.match(new RegExp(pattern));
-                    })
-                )
-                    setStyle();
-                else
-                    console.log('Site whitelisted')
-            });
-        }
-    });
+    var filter = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-    function setStyle() {
-        if (!document.body) {
-            window.setTimeout(setStyle, 5);
+    chrome.runtime.sendMessage({
+        get: ['dark', 'whitelist', 'filter']
+    }, res => {
+        var enabled = res.dark;
+
+        // check if site is whitelisted
+        if ((new RegExp(res.whitelist.join('|'))).test(location.href)) {
+            console.log('[dark mode] site whitelisted by user');
             return;
         }
 
-        document.body.appendChild(s);
+        filter.innerHTML = res.filter;
+
+        // apply filter when document is available
+        setStyle(enabled);
+    });
+
+    function setStyle(enabled) {
+        var head = document.getElementsByTagName('head')[0];
+
+        if (!head) {
+            window.setTimeout(setStyle, 5, enabled);
+            return;
+        }
+
+        if (enabled)
+            document.documentElement.classList.add('dark');
+
+        head.appendChild(filter);
     }
 })();
+
+// toggle theme live
+chrome.runtime.onMessage.addListener(req => {
+    document.documentElement.classList.toggle('dark', req.dark);
+});

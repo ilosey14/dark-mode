@@ -1,9 +1,19 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <filter id="filter">
+    <filter id="-dark-mode-filter">
         <feColorMatrix type="matrix"
-                       values=" 1 -1 -1 0 .5
-                               -1  1 -1 0 .5
-                               -1 -1  1 0 .5
-                                0  0  0 1  0" />
+                       values=" 1 -1 -1 0 1
+                               -1  1 -1 0 1
+                               -1 -1  1 0 1
+                                0  0  0 1 0" />
     </filter>
+    <style type="text/css">
+        html.dark
+        {background-color:#000;filter:url(#-dark-mode-filter)}
+
+        html.dark img,
+        html.dark video,
+        html.dark iframe,
+        html.dark [style*=background-image]
+        {filter:url(#-dark-mode-filter) saturate(0.5)}
+    </style>
 </svg>

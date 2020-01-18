@@ -30,6 +30,9 @@ input[type=text] {
     background-color: #444444;
     border-bottom: 1px solid white;
 }
+input:disabled {
+    cursor: not-allowed;
+}
 
 /* toggle button */
 #theme-toggle {

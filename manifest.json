@@ -1,8 +1,9 @@
 {
+    "manifest_version": 2,
     "name": "Dark Mode",
     "author": "ilosey14",
-    "version": "0.1",
-    "description": "Very simple dark mode extension",
+    "version": "0.2",
+    "description": "A very simple dark mode extension",
     "permissions": [
         "storage",
         "tabs",
