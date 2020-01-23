@@ -4,7 +4,7 @@
 Another dark mode extension for the web, but simplier.
 This tiny extension does one thing and one thing only, makes the page dark.
 
-![preview](preview.png)
+![preview](img/preview.png)
 
 ## Goals
 
