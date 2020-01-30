@@ -17,8 +17,9 @@ with corrective styling where needed.
 ## Features
 
 * Real-time enable/disable
-* whitelisting
-* whitelist editing and pattern matching
+* Tab independent settings
+* Whitelisting
+* Whitelist editing and pattern matching
 
 ## Limitations
 
@@ -39,8 +40,8 @@ providing its own native dark mode.
 * The color matrix can be improved
   * I don't know much about color mapping, etc. and thought this was a good start
   * Multiple filter elements may provide a more reliable result
-  * Different filter may work better on different pages
+  * Different filters may work better on different pages
     * Probably outside of scope
 * Some fonts don't play well with the filter
   * May have to do with their initial color as well
-  * Causes lot of fringing, hard to read
+  * Causes lots of fringing, hard to read
