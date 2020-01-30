@@ -3,6 +3,7 @@ const darkMode = (function () {
     var values = {
         filter: null,
         dark: true,
+        tabs: {},
         whitelist: []
     };
 
@@ -19,23 +20,45 @@ const darkMode = (function () {
     xhr.open('GET', chrome.extension.getURL('/css/dark-mode-filter.svg'));
     xhr.send();
 
+    // dark setting
+    chrome.storage.local.get('dark', res => values.dark = res.dark || false);
+
     // whitelist
     chrome.storage.local.get('whitelist', res => values.whitelist = (res.whitelist instanceof Array) ? res.whitelist : []);
 
     // return interface
     return {
         get: function (name) {
-            return values[name];
+            return (name.indexOf('/') < 0)
+                ? values[name]
+                : getValueByPath(values, name);
         },
         set: function (name, value) {
-            if (values[name] !== undefined)
-                values[name] = value;
+            if (values[name] !== undefined && value !== undefined) {
+                if (typeof value === 'object')
+                    Object.assign(values[name], value);
+                else
+                    values[name] = value;
+            }
+        },
+        deleteTab: function (id) {
+            delete values.tabs[id];
         }
     };
+
+    function getValueByPath(obj, path) {
+        for (let name of path.split('/')) {
+            if (!obj) break;
+
+            obj = obj[name];
+        }
+
+        return obj;
+    }
 })();
 
 // handle get/set requests
-chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
     if (req.set) {
         for (let name in req.set)
             darkMode.set(name, req.set[name]);
@@ -48,9 +71,25 @@ chrome.runtime.onMessage.addListener(function (req, sender, sendResponse) {
     if (req.get) {
         var res = {};
 
-        for (let name of req.get)
-            res[name] = darkMode.get(name);
+        if (!(req.get instanceof Array))
+            req.get = [ req.get ];
+
+        for (let name of req.get) {
+            res[name] = (name === 'tab')
+                ? sender.tab
+                : darkMode.get(name);
+        }
 
         sendResponse(res);
     }
+});
+
+// clear tab settings
+chrome.tabs.onRemoved.addListener(id => {
+    darkMode.deleteTab(id);
+});
+
+// save dark setting
+chrome.windows.onRemoved.addListener(() => {
+    chrome.storage.local.set('dark', darkMode.get('dark'));
 });

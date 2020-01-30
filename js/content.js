@@ -4,21 +4,30 @@
 
     var filter = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
+    // get resources
     chrome.runtime.sendMessage({
-        get: ['dark', 'whitelist', 'filter']
+        get: ['dark', 'whitelist', 'filter', 'tab']
     }, res => {
-        var enabled = res.dark;
-
         // check if site is whitelisted
-        if ((new RegExp(res.whitelist.join('|'))).test(location.href)) {
+        if (res.whitelist.length &&  (new RegExp(res.whitelist.join('|'))).test(location.href)) {
             console.log('[dark mode] site whitelisted by user');
             return;
         }
 
+        // configure filter
         filter.innerHTML = res.filter;
 
         // apply filter when document is available
-        setStyle(enabled);
+        setStyle(res.dark);
+
+        // log theme for tab
+        chrome.runtime.sendMessage({
+            set: {
+                tabs: {
+                    [res.tab.id]: res.dark
+                }
+            }
+        });
     });
 
     function setStyle(enabled) {
