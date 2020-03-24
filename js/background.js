@@ -21,7 +21,7 @@ const darkMode = (function () {
     xhr.send();
 
     // dark setting
-    chrome.storage.local.get('dark', res => values.dark = res.dark || false);
+    chrome.storage.local.get('dark', res => values.dark = res.dark || true);
 
     // whitelist
     chrome.storage.local.get('whitelist', res => values.whitelist = (res.whitelist instanceof Array) ? res.whitelist : []);
