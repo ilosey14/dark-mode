@@ -35,7 +35,7 @@ const darkMode = (function () {
         },
         set: function (name, value) {
             if (values[name] !== undefined && value !== undefined) {
-                if (typeof value === 'object')
+                if (typeof value === 'object' && !(value instanceof Array))
                     Object.assign(values[name], value);
                 else
                     values[name] = value;
