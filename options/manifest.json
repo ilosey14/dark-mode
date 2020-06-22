@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "Settings",
-    "version": "0.1",
+    "name": "Options",
+    "version": "0.2.1",
     "content_scripts": [
         {
             "matches": [
