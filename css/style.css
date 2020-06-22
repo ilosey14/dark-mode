@@ -30,6 +30,11 @@ input[type=text] {
     background-color: #444444;
     border-bottom: 1px solid white;
 }
+input.invalid,
+input:invalid {
+    border-color: red;
+}
+
 *:disabled {
     opacity: 0.5;
     cursor: not-allowed;
