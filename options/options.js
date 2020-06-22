@@ -1,7 +1,6 @@
 // ./settings/options.js
 var list = document.getElementById('whitelist'),
-    saved = true,
-    unloaded = false;
+    saved = true;
 
 list.nItems = 0;
 
@@ -17,32 +16,52 @@ document.getElementById('whitelist-add-item').onclick = function () {
 // save settings
 document.getElementById('whitelist-form').onsubmit = function (e) {
     e.preventDefault();
+    saved = true;
 
     // get new list
     var whitelist = [];
 
-    (new FormData(e.target)).forEach(function (text) {
-        if (!text) return;
-        whitelist.push(text);
+    (new FormData(e.target)).forEach(function (value, name, parent) {
+        if (!value) return;
+
+        // test expression
+        try {
+            new RegExp(value);
+        }
+        catch {
+            var el = document.getElementsByName(name)[0];
+
+            if (!el) return;
+
+            el.onfocus = function () {
+                this.classList.remove('invalid');
+                this.onfocus = null;
+            };
+
+            el.classList.add('invalid');
+            saved = false;
+
+            return;
+        }
+
+        whitelist.push(value);
     });
+
+    if (!saved) return;
 
     // set storage
     chrome.runtime.sendMessage({
         setWhitelist: whitelist
     });
-
-    // save
-    saved = true;
 };
 
 // unload
 window.onbeforeunload =
 window.onunload = function (e) {
-    if (saved || unloaded) return;
+    if (saved) return;
 
     e.preventDefault();
     e.returnValue = '';
-    unloaded = true;
 
     return 'Are you sure you want to leave?';
 };
