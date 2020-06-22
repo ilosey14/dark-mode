@@ -6,34 +6,32 @@
 
     // get resources
     chrome.runtime.sendMessage({
-        get: ['dark', 'whitelist', 'filter', 'tab']
+        getTabState: null,
+        isWhitelisted: location.href,
+        getFilter: null,
     }, res => {
         // check if site is whitelisted
-        if (res.whitelist.length &&  (new RegExp(res.whitelist.join('|'))).test(location.href)) {
+        if (res.isWhitelisted) {
             console.log('[dark mode] site whitelisted by user');
-            return;
+            res.getTabState = false;
         }
 
         // configure filter
-        filter.innerHTML = res.filter;
+        filter.innerHTML = res.getFilter;
 
         // apply filter when document is available
-        setStyle(res.dark);
-
-        // log theme for tab
-        chrome.runtime.sendMessage({
-            set: {
-                tabs: {
-                    [res.tab.id]: res.dark
-                }
-            }
-        });
+        setStyle(res.getTabState);
     });
 
+    /**
+     * Sets the dark mode style when the document is first available.
+     * @param {bool} enabled Whether dark mode is enabled
+     */
     function setStyle(enabled) {
         var head = document.getElementsByTagName('head')[0];
 
         if (!head) {
+            // continue to queue function until the document head is accessible.
             window.setTimeout(setStyle, 5, enabled);
             return;
         }

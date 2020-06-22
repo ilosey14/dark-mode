@@ -6,7 +6,7 @@ var list = document.getElementById('whitelist'),
 list.nItems = 0;
 
 // get whitelist
-chrome.runtime.sendMessage({ get: ['whitelist'] }, res => res.whitelist.forEach(addItem));
+chrome.runtime.sendMessage({ getWhitelist: null }, res => res.getWhitelist.forEach(addItem));
 
 // add item button
 document.getElementById('whitelist-add-item').onclick = function () {
@@ -28,9 +28,7 @@ document.getElementById('whitelist-form').onsubmit = function (e) {
 
     // set storage
     chrome.runtime.sendMessage({
-        set: {
-            whitelist: whitelist
-        }
+        setWhitelist: whitelist
     });
 
     // save

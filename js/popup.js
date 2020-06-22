@@ -1,5 +1,5 @@
 (function () {
-    var tab;
+    var tab, themeToggle, whitelistPageButton;
 
     // runtime message does not provide a sender.tab
     // object from popup, use query instead
@@ -12,60 +12,49 @@
 
         // check if already whitelisted
         // and set toggle button
-        chrome.runtime.sendMessage({ get: ['whitelist', 'tabs/' + tab.id] }, res => {
+        chrome.runtime.sendMessage({
+            isWhitelisted: tab.url,
+            getTabState: tab.id
+        }, res => {
             // whitelist
-            if (res.whitelist.length && (new RegExp(res.whitelist.join('|'))).test(tab.url)) {
-                whitelistPage.disabled =
-                theme.disabled = true;
-
-                whitelistPage.title =
-                theme.title = 'Already whitelisted. Click "Edit..." to make changes';
+            if (res.isWhitelisted) {
+                whitelistPageButton.disabled = true;
+                whitelistPageButton.title = 'Already whitelisted. Click "Edit..." to make changes';
             }
 
             // toggle
-            theme.checked = res['tabs/' + tab.id];
+            themeToggle.checked = !res.isWhitelisted && res.getTabState;
         });
     });
 
     // toggle button
-    var theme = document.getElementById('theme-toggle');
+    themeToggle = document.getElementById('theme-toggle');
 
-    theme.onchange = function () {
+    themeToggle.onchange = function () {
         // toggle page
         chrome.tabs.sendMessage(tab.id, { dark: this.checked });
 
         // set background flag
         chrome.runtime.sendMessage({
-            set: {
-                dark: this.checked,
-                tabs: {
-                    [tab.id]: this.checked
-                }
-            }
+            setTabState: [tab.id, this.checked],
+            setIsDark: this.checked
         });
     };
 
     // whitelist current page
-    var whitelistPage = document.getElementById('whitelist-page');
+    whitelistPageButton = document.getElementById('whitelist-page');
 
-    whitelistPage.onclick = function () {
-        // get whitelist to update
-        chrome.runtime.sendMessage({ get: 'whitelist' }, res => {
-            // get current page url
-            var url = new URL(tab.url);
+    whitelistPageButton.onclick = function () {
+        var url = new URL(tab.url);
 
-            res.whitelist.push(url.origin + '/*');
-
-            chrome.runtime.sendMessage({
-                set: {
-                    whitelist: res.whitelist
-                }
-            });
+        // append whitelist
+        chrome.runtime.sendMessage({
+            appendWhitelist: url.origin + '/*'
         });
     };
 
+    // open whitelist page
     document.getElementById('whitelist-edit').onclick = function () {
-        // chrome.runtime.openOptionsPage();
-        chrome.tabs.create({ url: '/options/options.html'});
+        chrome.tabs.create({ url: '/options/options.html' });
     };
 })();
