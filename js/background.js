@@ -59,7 +59,7 @@ const darkMode = (function () {
          * @param {string|number} id Tab id to add
          */
         addTab: function (id) {
-            if (values.tabs[id]) true;
+            if (id in values.tabs) return;
 
             values.tabs[id] = values.dark;
         },
@@ -76,16 +76,21 @@ const darkMode = (function () {
          * @param {bool} dark Whether the tab is in dark mode.
          */
         setTabState: function (sender, id, dark) {
-            id = id || sender.tab.id;
-            if (values.tabs[id] !== undefined)
-                values.tabs[id] = dark;
+            //! loose equality
+            if (id == undefined)
+                id = sender.tab.id;
+
+            values.tabs[id] = dark;
         },
         /**
          * Gets a tab's dark mode state by its id.
          * @param {string|number} id Tab id to get
          */
         getTabState: function (sender, id) {
-            id = id || sender.tab.id;
+            //! loose equality
+            if (id == undefined)
+                id = sender.tab.id;
+
             return values.tabs[id];
         },
         /**
