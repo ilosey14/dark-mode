@@ -99,8 +99,8 @@ const darkMode = (function () {
          * @param {string[]} whitelist
          */
         setWhitelist: function (sender, whitelist) {
-            values.whitelist = whitelist;
-            chrome.storage.local.set({ whitelist: whitelist });
+            values.whitelist = makeArray(whitelist);
+            chrome.storage.local.set({ whitelist: values.whitelist });
         },
         /**
          * Appends an item to the url whitelist array.
